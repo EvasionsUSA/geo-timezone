@@ -1,20 +1,26 @@
 <?php
 
-namespace GeoTimeZone\Geometry;
+declare(strict_types=1);
 
-use Exception;
-use geoPHP;
+namespace Tochka\GeoTimeZone\Geometry;
 
-class Utils
+use Tochka\GeoPHP\Geometry\GeometryInterface;
+use Tochka\GeoPHP\Geometry\Point;
+use Tochka\GeoPHP\GeoPHP;
+
+/**
+ * @api
+ */
+readonly class Utils
 {
-    const POLYGON_GEOJSON_NAME = "Polygon";
-    const POINT_WKT_NAME = "POINT";
-    const FEATURE_COLLECTION_GEOJSON_NAME = "FeatureCollection";
-    const FEATURE_GEOJSON_NAME = "Feature";
-    const WKT_EXTENSION = "wkt";
-    const GEOJSON_EXTENSION = "json";
-    const NOT_FOUND_IN_FEATURES = "notFoundInFeatures";
-    
+    public const POLYGON_GEOJSON_NAME = "Polygon";
+    public const POINT_WKT_NAME = "POINT";
+    public const FEATURE_COLLECTION_GEOJSON_NAME = "FeatureCollection";
+    public const FEATURE_GEOJSON_NAME = "Feature";
+    public const WKT_EXTENSION = "wkt";
+    public const GEOJSON_EXTENSION = "json";
+    public const NOT_FOUND_IN_FEATURES = "notFoundInFeatures";
+
     /**
      * Convert array of coordinates to polygon structured json array
      * @param $polygonPoints
@@ -22,12 +28,12 @@ class Utils
      */
     public function createPolygonJsonFromPoints($polygonPoints)
     {
-        return array(
+        return [
             'type' => self::POLYGON_GEOJSON_NAME,
-            'coordinates' => $this->structurePolygonCoordinates($polygonPoints)
-        );
+            'coordinates' => $this->structurePolygonCoordinates($polygonPoints),
+        ];
     }
-    
+
     /**
      * Structure polygon coordinates as geoPHP needs
      * @param $polygonPoints
@@ -35,7 +41,7 @@ class Utils
      */
     protected function structurePolygonCoordinates($polygonPoints)
     {
-        $structuredCoordinates = array();
+        $structuredCoordinates = [];
         foreach ($polygonPoints as $points) {
             if (count($points) == 2) {
                 $structuredCoordinates[] = $polygonPoints;
@@ -45,34 +51,24 @@ class Utils
         }
         return $structuredCoordinates;
     }
-    
+
     /**
      * Create polygon geometry object from polygon points array
-     * @param $polygonPoints
-     * @return bool|geoPHP::GeometryCollection|mixed
      */
-    protected function createPolygonFromPoints($polygonPoints)
+    protected function createPolygonFromPoints($polygonPoints): ?GeometryInterface
     {
         $polygonData = $this->createPolygonJsonFromPoints($polygonPoints);
         return $this->createPolygonFromJson(json_encode($polygonData));
     }
-    
+
     /**
      * Create polygon geometry object from structured polygon data (as json)
-     * @param $polygonJson
-     * @return bool|geoPHP::GeometryCollection|mixed
      */
-    public function createPolygonFromJson($polygonJson)
+    public function createPolygonFromJson(string $polygonJson): ?GeometryInterface
     {
-        $polygon = null;
-        try {
-            $polygon = geoPHP::load($polygonJson, self::GEOJSON_EXTENSION);
-        } catch (Exception $exception) {
-            echo $exception->getMessage();
-        }
-        return $polygon;
+        return GeoPHP::load($polygonJson, self::GEOJSON_EXTENSION);
     }
-    
+
     /**
      * Adapt quadrant bounds to polygon array format
      * @param $quadrantBounds
@@ -80,17 +76,17 @@ class Utils
      */
     public function adaptQuadrantBoundsToPolygon($quadrantBounds)
     {
-        return array(
-            array(
-                array($quadrantBounds[0], $quadrantBounds[1]),
-                array($quadrantBounds[0], $quadrantBounds[3]),
-                array($quadrantBounds[2], $quadrantBounds[3]),
-                array($quadrantBounds[2], $quadrantBounds[1]),
-                array($quadrantBounds[0], $quadrantBounds[1])
-            )
-        );
+        return [
+            [
+                [$quadrantBounds[0], $quadrantBounds[1]],
+                [$quadrantBounds[0], $quadrantBounds[3]],
+                [$quadrantBounds[2], $quadrantBounds[3]],
+                [$quadrantBounds[2], $quadrantBounds[1]],
+                [$quadrantBounds[0], $quadrantBounds[1]],
+            ],
+        ];
     }
-    
+
     /**
      * Create polygon object from quadrant bounds
      * @param $quadrantBounds
@@ -101,39 +97,39 @@ class Utils
         $polygonPoints = $this->adaptQuadrantBoundsToPolygon($quadrantBounds);
         return $this->createPolygonFromPoints($polygonPoints);
     }
-    
+
     /**
      * Structure features data
      * @param $features
      * @return array
      */
-    protected function structureFeatures($features)
+    private function structureFeatures($features)
     {
-        $structuredFeatures = array();
+        $structuredFeatures = [];
         foreach ($features as $feature) {
             $structuredFeatures[] = $this->structureOneFeature($feature);
         }
         return $structuredFeatures;
     }
-    
+
     /**
      * Structure an isolated feature
      * @param $feature
      * @return array
      */
-    protected function structureOneFeature($feature)
+    private function structureOneFeature($feature)
     {
-        $structuredFeature = array(
+        $structuredFeature = [
             "type" => self::FEATURE_GEOJSON_NAME,
-            "geometry" => array(
+            "geometry" => [
                 "type" => $feature['type'],
-                "coordinates" => $feature['coordinates']
-            ),
-            "properties" => $feature['properties']
-        );
+                "coordinates" => $feature['coordinates'],
+            ],
+            "properties" => $feature['properties'],
+        ];
         return $structuredFeature;
     }
-    
+
     /**
      * Create feature collection array from features list
      * @param $features
@@ -141,13 +137,13 @@ class Utils
      */
     public function getFeatureCollection($features)
     {
-        $featuresCollection = array(
+        $featuresCollection = [
             "type" => self::FEATURE_COLLECTION_GEOJSON_NAME,
-            "features" => $this->structureFeatures($features)
-        );
+            "features" => $this->structureFeatures($features),
+        ];
         return $featuresCollection;
     }
-    
+
     /**
      * Get intersection data json from two different geometry features
      * @param $geoFeaturesJsonA
@@ -161,7 +157,7 @@ class Utils
         $intersectionData = $polygonA->intersection($polygonB);
         return $intersectionData->out(self::GEOJSON_EXTENSION, true);
     }
-    
+
     /**
      * Check if a particular object point is IN the indicated polygon (source: https://github.com/sookoll/geoPHP.git)
      * and if it is not contained inside, it checks the boundaries
@@ -169,7 +165,7 @@ class Utils
      * @param $polygon
      * @return mixed
      */
-    protected function isInPolygon($point, $polygon)
+    private function isInPolygon($point, $polygon)
     {
         $isInside = false;
         foreach ($polygon->components as $component) {
@@ -186,18 +182,18 @@ class Utils
         }
         return $isInside;
     }
-    
+
     /**
      * Check if point is ON the boundaries of the polygon
      * @param $point
      * @param $polygon
      * @return mixed
      */
-    protected function isOnPolygonBoundaries($point, $polygon)
+    private function isOnPolygonBoundaries($point, $polygon)
     {
         return $polygon->pointOnVertex($point);
     }
-    
+
     /**
      * Check if the polygonA intersects with polygonB
      * @param $polygonJsonA
@@ -212,7 +208,7 @@ class Utils
         $polygonB = $this->getQuadrantPolygon($polygonBoundsB);
         return $polygonA->intersects($polygonB);
     }
-    
+
     /**
      * Check if the polygonA is within polygonB
      * @param $polygonBoundsOrigin
@@ -227,33 +223,19 @@ class Utils
         $polygonOrig = $this->getQuadrantPolygon($polygonBoundsOrigin);
         return $polygonOrig->within($polygonDest);
     }
-    
+
     /**
      * Create a point geometry object from coordinates (latitude, longitude)
-     * @param $latitude
-     * @param $longitude
-     * @return bool|geoPHP::GeometryCollection|mixed
      */
-    protected function createPoint($latitude, $longitude)
+    private function createPoint($latitude, $longitude): Point
     {
-        $point = null;
-        try {
-            $formattedPoint = self::POINT_WKT_NAME . "({$longitude} {$latitude})";
-            $point = geoPHP::load($formattedPoint, self::WKT_EXTENSION);
-        } catch (Exception $exception) {
-            echo $exception->getMessage();
-        }
-        return $point;
+        return new Point($longitude, $latitude);
     }
-    
+
     /**
      * Check if point (latitude, longitude) is IN a particular features polygon
-     * @param $features
-     * @param $latitude
-     * @param $longitude
-     * @return null|string
      */
-    public function isPointInQuadrantFeatures($features, $latitude, $longitude)
+    public function isPointInQuadrantFeatures($features, float $latitude, float $longitude): string
     {
         $timeZone = self::NOT_FOUND_IN_FEATURES;
         $point = $this->createPoint($latitude, $longitude);
@@ -262,8 +244,8 @@ class Utils
                 foreach ($feature['geometry']['coordinates'] as $polygonFeatures) {
                     $polygon = $this->createPolygonFromJson(
                         json_encode($this->createPolygonJsonFromPoints(
-                            $polygonFeatures
-                        ))
+                            $polygonFeatures,
+                        )),
                     );
                     if ($this->isInPolygon($point, $polygon) ||
                         $this->isOnPolygonBoundaries($point, $polygon)) {
@@ -275,7 +257,7 @@ class Utils
         }
         return $timeZone;
     }
-    
+
     /**
      * Check if the point is between two points from the polygon
      * @param $point
@@ -283,7 +265,7 @@ class Utils
      * @param $backPolygonPoint
      * @return bool
      */
-    protected function isInside($point, $currentPolygonPoint, $backPolygonPoint)
+    private function isInside(Point $point, $currentPolygonPoint, $backPolygonPoint): bool
     {
         return ($currentPolygonPoint->y() > $point->y()) != ($backPolygonPoint->y() > $point->y()) &&
             (

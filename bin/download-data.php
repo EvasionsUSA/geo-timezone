@@ -1,9 +1,11 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/../vendor/autoload.php';
+declare(strict_types=1);
 
-use GeoTimeZone\UpdaterData;
+require __DIR__ . '/../vendor/autoload.php';
 
-$updater = new UpdaterData(__DIR__.'/../data/geo.data');
+use src\UpdaterData;
+
+$updater = new UpdaterData(__DIR__ . '/../data/geo.data');
 $updater->updateData();

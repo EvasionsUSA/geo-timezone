@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\GeoTimeZone;
-use GeoTimeZone\UpdaterData;
+
+use src\UpdaterData;
 
 include __DIR__ . "/../../vendor/autoload.php";
 
@@ -16,7 +19,7 @@ class UpdaterDataTest
         } catch (\ErrorException $error) {
             echo $error->getMessage();
         }
-        
+
     }
 }
 

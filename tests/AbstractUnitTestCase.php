@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -18,7 +20,7 @@ class AbstractUnitTestCase extends TestCase
         $reflector = new \ReflectionClass($className);
         $method = $reflector->getMethod($methodName);
         $method->setAccessible(true);
-        
+
         return $method;
     }
 }
