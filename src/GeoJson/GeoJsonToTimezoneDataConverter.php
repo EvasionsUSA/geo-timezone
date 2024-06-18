@@ -18,7 +18,7 @@ readonly class GeoJsonToTimezoneDataConverter
 
     /**
      * @param string $json
-     * @return array<TimezoneData>
+     * @return list<TimezoneData>
      * @throws InvalidGeoJsonData
      */
     public function fromGeoJsonToTimezoneData(string $json): array
@@ -26,7 +26,7 @@ readonly class GeoJsonToTimezoneDataConverter
         try {
             $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            throw new InvalidGeoJsonData('Invalid json', $e->getCode(), $e);
+            throw new InvalidGeoJsonData('Invalid json', 2002, $e);
         }
 
         if (!isset($data['type']) || $data['type'] !== 'FeatureCollection' || !isset($data['features']) || !is_array(
@@ -39,7 +39,7 @@ readonly class GeoJsonToTimezoneDataConverter
     }
 
     /**
-     * @param array<TimezoneData> $timezonesData
+     * @param list<TimezoneData> $timezonesData
      * @throws InvalidGeoJsonData
      */
     public function fromTimezoneDataToGeoJson(array $timezonesData): string
@@ -57,13 +57,13 @@ readonly class GeoJsonToTimezoneDataConverter
 
             return json_encode($geoJson, JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            throw new InvalidGeoJsonData('Error while write GeoJSON', $e->getCode(), $e);
+            throw new InvalidGeoJsonData('Error while write GeoJSON', 2001, $e);
         }
     }
 
     /**
      * @param array $featureCollection
-     * @return array<TimezoneData>
+     * @return list<TimezoneData>
      */
     private function parseFeatureCollection(array $featureCollection): array
     {

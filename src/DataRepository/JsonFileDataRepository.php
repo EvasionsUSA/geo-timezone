@@ -21,7 +21,7 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
     ) {}
 
     /**
-     * @return array<TimezoneData>
+     * @return list<TimezoneData>
      */
     public function read(?string $indexName = null): array
     {
@@ -34,7 +34,7 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
     }
 
     /**
-     * @param array<TimezoneData> $data
+     * @param list<TimezoneData> $data
      */
     public function write(array $data, ?string $indexName = null): void
     {
@@ -47,7 +47,7 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
         try {
             file_put_contents($this->getIndexFilePath($indexName), $geoJson);
         } catch (\Throwable $e) {
-            throw new WriteIndexException($e->getMessage(), $e->getCode(), $e);
+            throw new WriteIndexException($e->getMessage(), 3001, $e);
         }
     }
 

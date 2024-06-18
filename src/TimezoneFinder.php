@@ -26,7 +26,7 @@ readonly class TimezoneFinder
         $quadrantIndex = $this->quadrantBuilder->getQuadrantIndexByPoint($latitude, $longitude, $indexLevel);
 
         $this->logger?->info('Load data for quadrant [' . ($quadrantIndex ?? 'default') . ']');
-        $data = $this->dataRepository->read(empty($quadrantIndex) ? null : $quadrantIndex);
+        $data = $this->dataRepository->read($quadrantIndex);
 
         $point = new Point($longitude, $latitude);
 

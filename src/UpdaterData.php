@@ -22,10 +22,10 @@ readonly class UpdaterData
     public const REPO_PATH = '/repos/evansiroky/timezone-boundary-builder/releases/latest';
     public const GEO_JSON_DEFAULT_URL = 'none';
     public const GEO_JSON_DEFAULT_NAME = 'geojson';
-    
+
     private string $dataDirectory;
     private string $downloadDir;
-    
+
     public function __construct(
         string $dataDirectory,
         private ?LoggerInterface $logger = null,
@@ -33,7 +33,7 @@ readonly class UpdaterData
         $this->dataDirectory = rtrim($dataDirectory, DIRECTORY_SEPARATOR);
         $this->downloadDir = $dataDirectory . DIRECTORY_SEPARATOR . self::DOWNLOAD_DIR;
     }
-    
+
     /**
      * Main function that runs all updating process
      */
@@ -42,10 +42,10 @@ readonly class UpdaterData
         try {
             $this->logger?->info('Downloading data...');
             $this->downloadLastVersion();
-            
+
             $this->logger?->info('Unzip data...');
             $this->unzipData($this->downloadDir . DIRECTORY_SEPARATOR . self::TIMEZONE_FILE_NAME . '.zip');
-            
+
             $this->logger?->info('Rename timezones json...');
             return $this->renameTimezoneJson();
         } catch (GeoTimeZoneException $e) {
@@ -54,7 +54,7 @@ readonly class UpdaterData
             throw new UpdaterException('Error while update data', 100, $e);
         }
     }
-    
+
     /**
      * Get complete json response from repo
      * @throws UpdaterException
@@ -69,7 +69,7 @@ readonly class UpdaterData
             throw new UpdaterException('Error while get HTTP response', 100, $e);
         }
     }
-    
+
     /**
      * Download zip file
      */
@@ -84,23 +84,23 @@ readonly class UpdaterData
             throw new UpdaterException('Error while get HTTP response', 100, $e);
         }
     }
-    
+
     /**
      * Get timezones json url
      */
     private function getGeoJsonUrl(string $data): string
     {
         $jsonResp = json_decode($data, true);
-        
+
         foreach ($jsonResp['assets'] as $asset) {
-            if (strpos($asset['name'], self::GEO_JSON_DEFAULT_NAME)) {
+            if (str_contains($asset['name'], self::GEO_JSON_DEFAULT_NAME)) {
                 return $asset['browser_download_url'];
             }
         }
-        
+
         return self::GEO_JSON_DEFAULT_URL;
     }
-    
+
     /**
      * Download last version reference repo
      */
@@ -117,11 +117,11 @@ readonly class UpdaterData
             }
             $this->getZipResponse(
                 $geoJsonUrl,
-                $this->downloadDir . DIRECTORY_SEPARATOR . self::TIMEZONE_FILE_NAME . ".zip"
+                $this->downloadDir . DIRECTORY_SEPARATOR . self::TIMEZONE_FILE_NAME . ".zip",
             );
         }
     }
-    
+
     /**
      * Unzip data
      */
@@ -133,13 +133,13 @@ readonly class UpdaterData
             if (!is_dir($this->downloadDir . DIRECTORY_SEPARATOR . $zipName)) {
                 mkdir($this->downloadDir . DIRECTORY_SEPARATOR . $zipName);
             }
-            
+
             $zip->extractTo($this->downloadDir . DIRECTORY_SEPARATOR . $zipName);
             $zip->close();
             unlink($filePath);
         }
     }
-    
+
     /**
      * Rename downloaded timezones json file
      */
@@ -149,14 +149,14 @@ readonly class UpdaterData
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
         $jsonPath = '';
         foreach ($files as $pathFile => $_) {
-            if (strpos($pathFile, '.json')) {
+            if (str_ends_with($pathFile, '.json')) {
                 $jsonPath = $pathFile;
                 break;
             }
         }
         $timezonesSourcePath = dirname($jsonPath) . DIRECTORY_SEPARATOR . self::TIMEZONE_FILE_NAME . '.json';
         rename($jsonPath, $timezonesSourcePath);
-        
+
         return $timezonesSourcePath;
     }
 }
