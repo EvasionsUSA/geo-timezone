@@ -67,8 +67,12 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
 
     private function getIndexFilePath(?string $indexName): string
     {
-        $indexPath = rtrim($this->dataDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'timezones' . DIRECTORY_SEPARATOR . $indexName . '.json';
+        $indexDirectory = rtrim($this->dataDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'timezones';
 
-        return $indexName === null ? $this->baseGeoDataPath : $indexPath;
+        if (!is_dir($indexDirectory)) {
+            mkdir($indexDirectory, recursive: true);
+        }
+
+        return $indexName === null ? $this->baseGeoDataPath : $indexDirectory . DIRECTORY_SEPARATOR . $indexName . '.json';
     }
 }

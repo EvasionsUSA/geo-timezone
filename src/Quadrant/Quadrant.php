@@ -8,6 +8,9 @@ use Tochka\GeoPHP\Geometry\LineString;
 use Tochka\GeoPHP\Geometry\Point;
 use Tochka\GeoPHP\Geometry\Polygon;
 
+/**
+ * @internal
+ */
 readonly class Quadrant
 {
     public function __construct(

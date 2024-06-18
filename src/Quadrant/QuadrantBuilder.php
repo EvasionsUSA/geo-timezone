@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tochka\GeoTimeZone\Quadrant;
 
+/**
+ * @internal
+ */
 readonly class QuadrantBuilder
 {
     public const INDEX_A = 'a';

@@ -6,6 +6,9 @@ namespace Tochka\GeoTimeZone\DataRepository;
 
 use Tochka\GeoTimeZone\Quadrant\TimezoneData;
 
+/**
+ * @api
+ */
 interface DataRepositoryInterface
 {
     public function has(?string $indexName = null): bool;
