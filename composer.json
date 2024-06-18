@@ -5,7 +5,7 @@
     "require": {
         "php": "8.2.*|8.3.*",
         "ext-zip": "*",
-        "guzzlehttp/guzzle": "^6.0",
+        "guzzlehttp/guzzle": "^6.0|^7.0",
         "psr/log": "^3.0",
         "tochka-developers/geophp": "^0.2"
     },
