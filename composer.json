@@ -1,7 +1,6 @@
 {
     "name": "tochka-developers/geo-timezone",
-    "homepage": "http://minube.com",
-    "description": "PHP library for timezone calculation from a particular location and date.",
+    "description": "PHP library for timezone calculation from a particular location.",
     "license": "MIT",
     "require": {
         "php": "8.2.*|8.3.*",
@@ -9,7 +8,7 @@
         "ext-mbstring": "*",
         "ext-zip": "*",
         "ext-xml": "*",
-        "tochka-developers/geophp": "^0.1",
+        "tochka-developers/geophp": "^0.2",
         "psr/log": "^3.0"
     },
     "require-dev": {
