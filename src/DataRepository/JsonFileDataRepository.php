@@ -20,6 +20,11 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
         private GeoJsonToTimezoneDataConverter $geoJsonConverter = new GeoJsonToTimezoneDataConverter(),
     ) {}
 
+    public function has(?string $indexName = null): bool
+    {
+        return file_exists($this->getIndexFilePath($indexName));
+    }
+
     /**
      * @return list<TimezoneData>
      */
@@ -51,11 +56,6 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
         }
     }
 
-    private function getIndexFilePath(?string $indexName): string
-    {
-        return $indexName === null ? $this->baseGeoDataPath : $this->dataDirectory . $indexName . '.json';
-    }
-
     public function remove(?string $indexName = null): void
     {
         if ($indexName === null) {
@@ -63,5 +63,12 @@ readonly class JsonFileDataRepository implements DataRepositoryInterface
         }
 
         @unlink($this->getIndexFilePath($indexName));
+    }
+
+    private function getIndexFilePath(?string $indexName): string
+    {
+        $indexPath = rtrim($this->dataDirectory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'timezones' . DIRECTORY_SEPARATOR . $indexName . '.json';
+
+        return $indexName === null ? $this->baseGeoDataPath : $indexPath;
     }
 }

@@ -8,6 +8,8 @@ use Tochka\GeoTimeZone\Quadrant\TimezoneData;
 
 interface DataRepositoryInterface
 {
+    public function has(?string $indexName = null): bool;
+
     /**
      * @return list<TimezoneData>
      */
