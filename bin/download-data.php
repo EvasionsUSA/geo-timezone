@@ -3,9 +3,9 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
+use Tochka\GeoTimeZone\UpdaterData;
 
-use src\UpdaterData;
+require __DIR__ . '/../vendor/autoload.php';
 
 $updater = new UpdaterData(__DIR__ . '/../data/geo.data');
 $updater->updateData();

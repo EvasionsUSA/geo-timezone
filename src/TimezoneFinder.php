@@ -20,7 +20,7 @@ readonly class TimezoneFinder
         private ?LoggerInterface $logger = null,
     ) {}
 
-    public function findTimezone(float $latitude, float $longitude, int $indexLevel = 0): ?string
+    public function findTimezone(float $latitude, float $longitude, int $indexLevel = Indexer::DEFAULT_INDEX_LEVEL): ?string
     {
         $this->logger?->info('Find index for coordinates');
         $quadrantIndex = $this->quadrantBuilder->getQuadrantIndexByPoint($latitude, $longitude, $indexLevel);

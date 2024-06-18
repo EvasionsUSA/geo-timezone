@@ -24,34 +24,31 @@ There are two main classes:
 * UpdaterData: script that downloads the last version of the timezone boundaries data and creates the tree of directories (data.zip). It takes a few hours, so you can use "data.zip" from node-geo-tz to test for the first time. Otherwise, you can run the UpdaterData script in order to get the last version and create the directories tree. Destination folder must have write permisions
 
 ```php
-    use src\UpdaterData;
+use Tochka\GeoTimeZone\UpdaterData;
+use Tochka\GeoTimeZone\Indexer;
 
-    $updater = new UpdaterData("/path/to/data/");
-    $updater->updateData();
+$updater = new UpdaterData('/path/to/base/data/');
+$dataPath = $updater->updateData();
+
+$dataRepository = new JsonFileDataRepository($dataPath, '/path/to/index/data/directory');
+$indexer = new Indexer($dataRepository);
+$indexer->index();
 ```
 
 * Calculator: provides the timezone name or the local date associated to a particular latitude, longitude and timestamp.
 
 ```php
-    use src\Calculator;
+    use Tochka\GeoTimeZone\TimezoneFinder;
+    use Tochka\GeoTimeZone\DataRepository\JsonFileDataRepository;
 
     $latitude = 39.452800;
     $longitude = -0.347038;
     $timestamp = 1469387760;
 
-    $calculator = new Calculator("/path/to/data/");
-
-    // Local date
-    $localDate = $calculator->getLocalDate($latitude, $longitude, $timestamp);
-    /* DateTime Object
-    (
-        [date] => 2016-07-24 21:16:00.000000
-        [timezone_type] => 3
-        [timezone] => Europe/Madrid
-    )
-    */
+    $dataRepository = new JsonFileDataRepository('/path/to/base/data/file.json', '/path/to/index/data/');
+    $timezoneFinder = new TimezoneFinder($dataRepository);
 
     // TimeZone name
-    $timeZoneName = $calculator->getTimeZoneName($latitude, $longitude);
+    $timeZoneName = $timezoneFinder->findTimezone($latitude, $longitude);
     //Europe/Madrid
 ```

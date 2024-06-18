@@ -14,6 +14,8 @@ use Tochka\GeoTimeZone\Quadrant\QuadrantBuilder;
  */
 readonly class Indexer
 {
+    public const DEFAULT_INDEX_LEVEL = 6;
+    
     public function __construct(
         private DataRepositoryInterface $dataRepository,
         private QuadrantBuilder $quadrantBuilder = new QuadrantBuilder(),
@@ -21,7 +23,7 @@ readonly class Indexer
         private ?LoggerInterface $logger = null,
     ) {}
 
-    public function index(int $level, ?Quadrant $quadrant = null): void
+    public function index(int $level = self::DEFAULT_INDEX_LEVEL, ?Quadrant $quadrant = null): void
     {
         if ($level === 0) {
             return;
