@@ -27,6 +27,37 @@ readonly class QuadrantBuilder
         };
     }
 
+    /**
+     * @param int $level
+     * @param Quadrant|null $quadrant
+     * @return list<Quadrant>
+     */
+    public function getQuadrantsByLevel(int $level, ?Quadrant $quadrant = null): array
+    {
+        if ($quadrant === null) {
+            $quadrant = $this->getDefaultQuadrant();
+        }
+        
+        if ($level === 0) {
+            return [$quadrant];
+        }
+
+        $result = [];
+        
+        $quadrants = [
+            $this->getQuadrantById($quadrant, QuadrantBuilder::INDEX_A),
+            $this->getQuadrantById($quadrant, QuadrantBuilder::INDEX_B),
+            $this->getQuadrantById($quadrant, QuadrantBuilder::INDEX_C),
+            $this->getQuadrantById($quadrant, QuadrantBuilder::INDEX_D),
+        ];
+
+        foreach ($quadrants as $subQuadrant) {
+            $result[] = $this->getQuadrantsByLevel($level - 1, $subQuadrant);
+        }
+
+        return array_merge(...$result);
+    }
+
     public function getDefaultQuadrant(): Quadrant
     {
         return new Quadrant(-180.0, 90.0, 180.0, -90.0);

@@ -75,7 +75,7 @@ readonly class GeoJsonToTimezoneDataConverter
         return $result;
     }
 
-    private function parseFeature(array $feature): TimezoneData
+    public function parseFeature(array $feature): TimezoneData
     {
         if (!isset($feature['type']) || $feature['type'] !== 'Feature' || !isset($feature['properties']['tzid']) || !isset($feature['geometry'])) {
             throw new InvalidGeoJsonData('Invalid GeoJSON format');

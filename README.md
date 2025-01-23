@@ -25,13 +25,13 @@ There are two main classes:
 
 ```php
 use Tochka\GeoTimeZone\UpdaterData;
-use Tochka\GeoTimeZone\Indexer;
+use Tochka\GeoTimeZone\IndexerWithOptimalReader;
 
 $updater = new UpdaterData('/path/to/base/data/');
 $dataPath = $updater->updateData();
 
 $dataRepository = new JsonFileDataRepository($dataPath, '/path/to/index/data/directory');
-$indexer = new Indexer($dataRepository);
+$indexer = new IndexerWithOptimalReader($dataPath, $dataRepository);
 $indexer->index();
 ```
 

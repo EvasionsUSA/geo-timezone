@@ -7,6 +7,7 @@
         "ext-zip": "*",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "psr/log": "^3.0",
+        "salsify/json-streaming-parser": "^8.3",
         "tochka-developers/geophp": "^0.2"
     },
     "require-dev": {
